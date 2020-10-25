@@ -1,0 +1,6 @@
+v128-shell (1.0.0) UNRELEASED; urgency=medium
+
+  * Add an update_service method to the Discoverer to resolve a warning
+    with zeroconf.
+
+ -- June Tate-Gans <june@theonelab.com>  Thu, 25 Jun 2020 13:06:16 -0500

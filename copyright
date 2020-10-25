@@ -1,0 +1,6 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: v128-shell
+Source: https://github.com/V128Team/v128-shell
+Files: *
+Copyright: Copyright 2020 June Tate-Gans <june@theonelab.com>
+License: GPLv2
