@@ -1,5 +1,5 @@
 Source: v128-shell
-Build-Depends: debhelper (>= 11), autoconf, automake, wayland-protocols,
+Build-Depends: debhelper (>= 11), cmake, wayland-protocols,
  libx11-dev, libweston-9-dev, libfontconfig1-dev, libdrm-dev, libdrm-intel1,
  libdrm-nouveau2, libwld, libxcb-composite0-dev, libxcb-ewmh-dev,
  libxcb-icccm4-dev, libinput-dev
