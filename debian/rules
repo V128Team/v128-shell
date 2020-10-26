@@ -2,7 +2,33 @@
 # -*- makefile -*-
 
 # Uncomment this to turn on verbose mode.
-# export DH_VERBOSE=1
+#export DH_VERBOSE=1
+
+export DEB_HOST_ARCH_OS ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+unexport HOME
+
+override_dh_clean:
+	make clean
+
+override_dh_auto_clean:
+
+override_dh_update_autotools_config:
+
+override_dh_autoreconf:
+
+override_dh_auto_configure:
+
+override_dh_installdocs:
+
+override_dh_installinfo:
+
+override_dh_auto_build:
+	PREFIX=debian/v128-shell/usr make
+
+override_dh_auto_install:
+	PREFIX=debian/v128-shell/usr make install
 
 %:
-	dh $@ --with python3 --buildsystem=pybuild
+	dh $@
+
+.PHONY: override_dh_auto_configure

@@ -1,19 +1,17 @@
 Source: v128-shell
-Section: python
-Maintainer: June Tate-Gans <june@theonelab.com>
-Build-Depends: debhelper,
-               dh-python,
-               python3-all-dev,
-               python3-setuptools
+Build-Depends: debhelper (>= 11), autoconf, automake, wayland-protocols,
+ libx11-dev, libweston-9-dev, libfontconfig1-dev, libdrm-dev, libdrm-intel1,
+ libdrm-nouveau2, libwld, libxcb-composite0-dev, libxcb-ewmh-dev,
+ libxcb-icccm4-dev, libinput-dev
+Section: contrib/otherosfs
 Priority: optional
-Vcs-Git: https://github.com/V128Team/v128-shell
-X-Python3-Version: >= 3.5
+Maintainer: June Tate-Gans <june@theonelab.com>
+Homepage: http://vice-emu.sourceforge.net/
+Standards-Version: 4.3.0
 
 Package: v128-shell
-Section: misc
-Priority: optional
-Architecture: all
-Depends: ${python3:Depends},
-         ${misc:Depends},
-         python3-pywlroots
-Description: A wlroots-based compositor shell for the v128
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends} wayland-protocols, libx11-6,
+ libweston-9-0, libwld, libxcb-composite0, libxcb-ewmh2, libxcb-icccm4,
+ libinput10
+Description: This is the shell for the V128 VICE hardware emulator
