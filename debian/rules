@@ -1,11 +1,15 @@
 #!/usr/bin/make -f
-# -*- makefile -*-
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-export DEB_HOST_ARCH_OS ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
-unexport HOME
+include /usr/share/dpkg/architecture.mk
+
+export QT_SELECT := qt5
 
 %:
-	dh $@
+	dh $@ --with pkgkde_symbolshelper
+
+override_dh_missing:
+	dh_missing --fail-missing
+

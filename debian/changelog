@@ -1,5 +1,5 @@
-v128-shell (1.0.v128-1) UNRELEASED; urgency=medium
+v128-shell (1.0-v128-1) focal; urgency=medium
 
-  * First release
+  * First release.
 
- -- June Tate-Gans <june@theonelab.com>  Fri, 28 Dec 2018 19:06:58 +0000
+ -- June Tate-Gans <june@theonelab.com>  Thu, 09 Apr 2020 18:59:33 +0300

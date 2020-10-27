@@ -1,17 +1,34 @@
 Source: v128-shell
-Build-Depends: debhelper (>= 11), cmake, wayland-protocols,
- libx11-dev, libweston-9-dev, libfontconfig1-dev, libdrm-dev, libdrm-intel1,
- libdrm-nouveau2, libwld, libxcb-composite0-dev, libxcb-ewmh-dev,
- libxcb-icccm4-dev, libinput-dev
-Section: contrib/otherosfs
+Section: x11
 Priority: optional
 Maintainer: June Tate-Gans <june@theonelab.com>
-Homepage: http://vice-emu.sourceforge.net/
-Standards-Version: 4.3.0
+Build-Depends: debhelper (>= 11~),
+               dpkg-dev (>= 1.17.14),
+               libegl1-mesa-dev,
+               libfontconfig1-dev,
+               libglib2.0-dev,
+               libinput-dev,
+               libmtdev-dev [linux-any],
+               libudev-dev [linux-any],
+               libwayland-dev (>= 1.6.0),
+               libwayland-egl1-mesa | libwayland-egl1,
+               libxcomposite-dev,
+               libxkbcommon-dev (>= 0.2.0),
+               libxrender-dev,
+               pkg-config,
+               pkg-kde-tools,
+               qtbase5-dev (>= 5.12.8+dfsg~),
+               qtbase5-dev:native (>= 5.12.8+dfsg~),
+               qtbase5-private-dev (>= 5.12.8+dfsg~),
+               qtdeclarative5-private-dev (>= 5.12.8~),
+               xauth <!nocheck>,
+               xvfb <!nocheck>
+Standards-Version: 4.4.1
 
 Package: v128-shell
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends} wayland-protocols, libx11-6,
- libweston-9-0, libwld, libxcb-composite0, libxcb-ewmh2, libxcb-icccm4,
- libinput10
-Description: This is the shell for the V128 VICE hardware emulator
+Multi-Arch: same
+Section: x11
+Pre-Depends: ${misc:Pre-Depends}
+Depends: qml-module-qtwayland-compositor, ${misc:Depends}, ${shlibs:Depends}
+Description: v128 Wayland Shell
