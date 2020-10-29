@@ -1,0 +1,14 @@
+[Unit]
+Description=v128 Desktop Shell
+Conflicts=getty@tty1.service
+After=getty@tty1.service
+After=rc-local.service plymouth-start.service systemd-user-sessions.service
+OnFailure=plymouth-quit.service
+
+[Service]
+ExecStart=/usr/bin/v128-shell -platform eglfs
+Restart=always
+User=user
+
+[Install]
+WantedBy=multi-user.target

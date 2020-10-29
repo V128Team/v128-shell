@@ -2,27 +2,24 @@ Source: v128-shell
 Section: x11
 Priority: optional
 Maintainer: June Tate-Gans <june@theonelab.com>
-Build-Depends: debhelper (>= 11~),
-               dpkg-dev (>= 1.17.14),
-               libegl1-mesa-dev,
-               libfontconfig1-dev,
-               libglib2.0-dev,
-               libinput-dev,
-               libmtdev-dev [linux-any],
-               libudev-dev [linux-any],
-               libwayland-dev (>= 1.6.0),
-               libwayland-egl1-mesa | libwayland-egl1,
-               libxcomposite-dev,
-               libxkbcommon-dev (>= 0.2.0),
-               libxrender-dev,
-               pkg-config,
-               pkg-kde-tools,
-               qtbase5-dev (>= 5.12.8+dfsg~),
-               qtbase5-dev:native (>= 5.12.8+dfsg~),
-               qtbase5-private-dev (>= 5.12.8+dfsg~),
-               qtdeclarative5-private-dev (>= 5.12.8~),
-               xauth <!nocheck>,
-               xvfb <!nocheck>
+Build-Depends:
+ debhelper (>= 11~),
+ dpkg-dev (>= 1.17.14),
+ libegl1-mesa-dev,
+ libfontconfig1-dev,
+ libglib2.0-dev,
+ libinput-dev,
+ libmtdev-dev [linux-any],
+ libudev-dev [linux-any],
+ libwayland-dev (>= 1.6.0),
+ libwayland-egl1-mesa | libwayland-egl1,
+ libwayland-server0,
+ libwlroots-dev,
+ libxcomposite-dev,
+ libxkbcommon-dev (>= 0.2.0),
+ libxrender-dev,
+ pkg-config
+ wayland-protocols,
 Standards-Version: 4.4.1
 
 Package: v128-shell
@@ -30,5 +27,6 @@ Architecture: any
 Multi-Arch: same
 Section: x11
 Pre-Depends: ${misc:Pre-Depends}
-Depends: qml-module-qtwayland-compositor, ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, libc6 (>= 2.14), libgl1, libstdc++6 (>= 5),
+ libwayland-client0 (>= 1.9.91), libwayland-server0 (>= 1.6.0), libwlroots5
 Description: v128 Wayland Shell
