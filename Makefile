@@ -29,7 +29,8 @@ clean:
 	rm -f v128-shell xdg-shell-protocol.h xdg-shell-protocol.c
 
 install:
-	install -m755 v128-shell $(DESTDIR)/bin
+	install -d -m755 $(DESTDIR)/usr/bin
+	install -m755 v128-shell $(DESTDIR)/usr/bin
 
 .DEFAULT_GOAL=v128-shell
 .PHONY: clean

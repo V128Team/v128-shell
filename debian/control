@@ -28,5 +28,5 @@ Multi-Arch: same
 Section: x11
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${misc:Depends}, ${shlibs:Depends}, libc6 (>= 2.14), libgl1, libstdc++6 (>= 5),
- libwayland-client0 (>= 1.9.91), libwayland-server0 (>= 1.6.0), libwlroots5
+ libwayland-client0 (>= 1.9.91), libwayland-server0 (>= 1.6.0), libwlroots6
 Description: v128 Wayland Shell
