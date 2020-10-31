@@ -18,8 +18,8 @@ Build-Depends:
  libxcomposite-dev,
  libxkbcommon-dev (>= 0.2.0),
  libxrender-dev,
- pkg-config
- wayland-protocols,
+ pkg-config,
+ wayland-protocols
 Standards-Version: 4.4.1
 
 Package: v128-shell
