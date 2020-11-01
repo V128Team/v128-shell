@@ -1,14 +1,39 @@
 [Unit]
 Description=v128 Desktop Shell
-Conflicts=getty@tty1.service
-After=getty@tty1.service
-After=rc-local.service plymouth-start.service systemd-user-sessions.service
-OnFailure=plymouth-quit.service
+BindsTo=user@1000.service
+
+Before=graphical.target
+Wants=dbus.socket
+After=systemd-user-sessions.service
+After=user@1000.service
+After=plymouth-quit-wait.service
+After=dbus.socket
+After=session-c1.scope
+
+ConditionPathExists=/dev/tty0
 
 [Service]
-ExecStart=/usr/bin/v128-shell -platform eglfs
-Restart=always
-User=user
+Environment=SYSTEMD_LOG_LEVEL=debug
+Environment=LANG=C.UTF-8
+ExecStart=/usr/bin/v128-shell
+TimeoutStartSec=30
+User=root
+PAMName=login
+WorkingDirectory=/home/user
+Restart=on-failure
+RestartSec=5s
+
+TTYPath=/dev/tty7
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+
+StandardInput=tty-fail
+StandardOutput=journal
+StandardError=journal
+
+UtmpIdentifier=tty7
+UtmpMode=user
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical.target
