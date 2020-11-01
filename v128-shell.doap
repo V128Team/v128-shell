@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name>v128-shell</name>
+  <shortname>v128-shell</shortname>
+  <shortdesc></shortdesc>
+  <description></description>
+  <license rdf:resource="http://usefulinc.com/doap/licenses/gpl" />
+
+  <programming-language>C</programming-language>
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>June Tate-Gans</foaf:name>
+      <foaf:mbox rdf:resource="mailto:june@theonelab.com" />
+    </foaf:Person>
+  </maintainer>
+</Project>
