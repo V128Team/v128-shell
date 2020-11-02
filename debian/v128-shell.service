@@ -3,10 +3,10 @@ Description=v128 Desktop Shell
 BindsTo=user@1000.service
 
 Before=graphical.target
+Before=plymouth-quit-wait.service
 Wants=dbus.socket
 After=systemd-user-sessions.service
 After=user@1000.service
-After=plymouth-quit-wait.service
 After=dbus.socket
 After=session-c1.scope
 
