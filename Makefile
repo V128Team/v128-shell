@@ -6,12 +6,14 @@ WAYLAND_SCANNER   := $(shell pkg-config --variable=wayland_scanner wayland-scann
 CFLAGS := \
 	 $(shell pkg-config --cflags wlroots) \
 	 $(shell pkg-config --cflags wayland-server) \
-	 $(shell pkg-config --cflags xkbcommon)
+	 $(shell pkg-config --cflags xkbcommon) \
+     -fno-omit-frame-pointer
 
 LIBS := \
 	 $(shell pkg-config --libs wlroots) \
 	 $(shell pkg-config --libs wayland-server) \
-	 $(shell pkg-config --libs xkbcommon)
+	 $(shell pkg-config --libs xkbcommon) \
+	 -lpthread -ldl
 
 SRCS := \
 	xdg-shell-protocol.c \
@@ -19,9 +21,10 @@ SRCS := \
 	log.c \
 	subprogram.c \
 	v128-logo.c \
-	background.c
+	background.c \
+	tracy/TracyClient.cpp
 
-OBJS := $(patsubst %.c,%.o,$(SRCS))
+OBJS := $(patsubst %.cpp,%.o,$(patsubst %.c,%.o,$(SRCS)))
 
 # wayland-scanner is a tool which generates C headers and rigging for Wayland
 # protocols, which are specified in XML. wlroots requires you to rig these up
@@ -32,11 +35,14 @@ xdg-shell-protocol.h:
 xdg-shell-protocol.c: xdg-shell-protocol.h
 	$(WAYLAND_SCANNER) private-code $(WAYLAND_PROTOCOLS)/stable/xdg-shell/xdg-shell.xml $@
 
+%.o: %.cpp
+	$(CXX) $(CFLAGS) -g -DWLR_USE_UNSTABLE -Itracy -c -o $@ $<
+
 %.o: %.c
 	$(CC) $(CFLAGS) -g -Werror -Wall -DWLR_USE_UNSTABLE -I. -c -o $@ $<
 
 v128-shell: $(OBJS)
-	$(CC) $(CFLAGS) -g -Werror -I. -DWLR_USE_UNSTABLE -o $@ $(OBJS) $(LIBS)
+	$(CXX) $(CFLAGS) -rdynamic -g -Werror -I. -DWLR_USE_UNSTABLE -o $@ $(OBJS) $(LIBS)
 
 clean:
 	rm -f v128-shell xdg-shell-protocol.h xdg-shell-protocol.c $(OBJS)

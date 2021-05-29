@@ -2,7 +2,9 @@
 #include <execinfo.h>
 #include <fcntl.h>
 #include <grp.h>
+#include <inttypes.h>
 #include <signal.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +13,8 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
-#include <stdarg.h>
+
+#include "tracy/TracyC.h"
 
 #include "tinywl.h"
 
@@ -247,6 +250,12 @@ struct render_data {
 };
 
 static void render_surface(struct wlr_surface *surface, int sx, int sy, void *data) {
+  TracyCZoneNS(render_surface_ctx, "render_surface", 10, true);
+
+  char frame_name[256] = {};
+  snprintf(frame_name, sizeof(*frame_name)-1, "surface 0x%" PRIXPTR, (uintptr_t)(surface));
+  TracyCFrameMarkStart(frame_name);
+
   /* This function is called for every surface that needs to be rendered. */
   struct render_data *rdata = data;
   struct tinywl_view *view = rdata->view;
@@ -257,8 +266,12 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
    * resource could be an opaque handle passed from the client, or the client
    * could have sent a pixel buffer which we copied to the GPU, or a few other
    * means. You don't have to worry about this, wlroots takes care of it. */
+  TracyCMessageL("wlr_surface_get_texture");
   struct wlr_texture *texture = wlr_surface_get_texture(surface);
   if (texture == NULL) {
+    TracyCMessageLS("Surface texture was NULL", 10);
+    TracyCFrameMarkEnd(frame_name);
+    TracyCZoneEnd(render_surface_ctx);
     return;
   }
 
@@ -299,14 +312,21 @@ static void render_surface(struct wlr_surface *surface, int sx, int sy, void *da
 
   /* This takes our matrix, the texture, and an alpha, and performs the actual
    * rendering on the GPU. */
+  TracyCMessageL("wlr_render_texture_with_matrix");
   wlr_render_texture_with_matrix(rdata->renderer, texture, matrix, 1);
 
   /* This lets the client know that we've displayed that frame and it can
    * prepare another one now if it likes. */
+  TracyCMessageL("wlr_surface_send_frame_done");
   wlr_surface_send_frame_done(surface, rdata->when);
+
+  TracyCFrameMarkEnd(frame_name);
+  TracyCZoneEnd(render_surface_ctx);
 }
 
 static void output_frame(struct wl_listener *listener, void *data) {
+  TracyCZoneNS(output_frame_ctx, "output_frame", 10, true);
+
   /* This function is called every time an output is ready to display a frame,
    * generally at the output's refresh rate (e.g. 60Hz). */
   struct tinywl_output *output =
@@ -317,7 +337,11 @@ static void output_frame(struct wl_listener *listener, void *data) {
   clock_gettime(CLOCK_MONOTONIC, &now);
 
   /* wlr_output_attach_render makes the OpenGL context current. */
+  TracyCMessageL("wlr_output_attach_render");
   if (!wlr_output_attach_render(output->wlr_output, NULL)) {
+    TracyCMessageLS("wlr_output_attach_render failed", 10);
+    TracyCFrameMark;
+    TracyCZoneEnd(output_frame_ctx);
     return;
   }
 
@@ -326,8 +350,10 @@ static void output_frame(struct wl_listener *listener, void *data) {
   wlr_output_effective_resolution(output->wlr_output, &width, &height);
 
   /* Begin the renderer (calls glViewport and some other GL sanity checks) */
+  TracyCMessageL("wlr_renderer_begin");
   wlr_renderer_begin(renderer, width, height);
 
+  TracyCMessageL("background_render");
   background_render(output->server, output->wlr_output, renderer);
 
   /* Each subsequent window we render is rendered on top of the last. Because
@@ -344,6 +370,7 @@ static void output_frame(struct wl_listener *listener, void *data) {
       .renderer = renderer,
       .when = &now,
     };
+    TracyCMessageL("wlr_xdg_surface_for_each_surface");
     /* This calls our render_surface function for each surface among the
      * xdg_surface's toplevel and popups. */
     wlr_xdg_surface_for_each_surface(view->xdg_surface,
@@ -352,8 +379,13 @@ static void output_frame(struct wl_listener *listener, void *data) {
 
   /* Conclude rendering and swap the buffers, showing the final frame
    * on-screen. */
+  TracyCMessageL("wlr_renderer_end");
   wlr_renderer_end(renderer);
+  TracyCMessageL("wlr_output_commit");
   wlr_output_commit(output->wlr_output);
+
+  TracyCZoneEnd(output_frame_ctx);
+  TracyCFrameMark;
 }
 
 static void server_new_output(struct wl_listener *listener, void *data) {
@@ -579,6 +611,7 @@ int main(int argc, char *argv[]) {
    * loop configuration to listen to libinput events, DRM events, generate
    * frame events at the refresh rate, and so on. */
   LOGF("Running Wayland compositor on WAYLAND_DISPLAY=%s", socket);
+
   wl_display_run(server.wl_display);
 
   /* Once wl_display_run returns, we shut down the server. */
