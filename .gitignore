@@ -1,3 +1,6 @@
+GPATH
+GRTAGS
+GTAGS
 __pycache__
 v128-shell.egg-info
 build
