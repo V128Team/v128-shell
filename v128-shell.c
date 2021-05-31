@@ -395,6 +395,7 @@ static void server_new_output(struct wl_listener *listener, void *data) {
    * monitor) becomes available. */
   struct tinywl_server *server = wl_container_of(listener, server, new_output);
   struct wlr_output *wlr_output = data;
+  int set_mode = 0;
 
   /* Some backends don't have modes. DRM+KMS does, and we need to set a mode
    * before we can use the output. The mode is a tuple of (width, height,
@@ -402,12 +403,31 @@ static void server_new_output(struct wl_listener *listener, void *data) {
    * just pick the monitor's preferred mode, a more sophisticated compositor
    * would let the user configure it. */
   if (!wl_list_empty(&wlr_output->modes)) {
-    struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
-    wlr_output_set_mode(wlr_output, mode);
-    wlr_output_enable(wlr_output, true);
-    if (!wlr_output_commit(wlr_output)) {
-      return;
+    struct wlr_output_mode *mode;
+
+    wl_list_for_each(mode, &wlr_output->modes, link) {
+      if ((mode->width == 1280) && (mode->height == 720)) {
+        LOGF("Attempting mode %dx%d@%d...", mode->width, mode->height, mode->refresh);
+
+        wlr_output_set_mode(wlr_output, mode);
+        wlr_output_enable(wlr_output, true);
+
+        if (!wlr_output_commit(wlr_output)) {
+          return;
+        }
+
+        LOGF("Set mode to %dx%d@%d", mode->width, mode->height, mode->refresh);
+        set_mode = 1;
+        break;
+      } else {
+        LOGF("Ignoring mode %dx%d@%d", mode->width, mode->height, mode->refresh);
+      }
     }
+  }
+
+  if (!set_mode) {
+    LOG("Failed to set mode.")
+    return;
   }
 
   /* Allocates and configures our state for this output */
